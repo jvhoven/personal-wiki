@@ -2,28 +2,34 @@
 #define PERSONALWIKI_WIKI_H
 
 #include <memory>
+#include <fstream>
 
 #include "strategy/strategy.hpp"
 #include "strategy/web.hpp"
+#include "tty/termcolor.hpp"
 
 class Wiki {
 public:
-    Wiki(): _strategy(nullptr) {}
+    Wiki() = default;
 
     enum EntryType {
         Web, Text
     };
 
-    void recordEntry(std::string fromSource) {
-        std::vector<std::string> tags = { "Test", "Nog een test" };
-        auto entry = _strategy->createEntry(fromSource, "Title", tags);
+    void recordEntry(const std::string &title, const std::string &fromSource, std::vector<std::string> tags) {
+        const auto entry = _strategy->createEntry(fromSource, title, tags);
 
         std::cout
+                << termcolor::blink << "Test"
                 << "Entry tags: \n"
                 << entry->getTags()
                 << "Content size in bytes: \n"
                 << entry->getContentInBytes()
                 << std::endl;
+    }
+
+    void readEntry() {
+
     }
 
     void setStrategy(int type) {
@@ -46,5 +52,7 @@ public:
 private:
     std::unique_ptr<Strategy> _strategy;
 };
+
+Wiki::Wiki() : _strategy(nullptr) {}
 
 #endif

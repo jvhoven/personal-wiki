@@ -8,7 +8,7 @@
 class Entry {
 public:
     Entry(const std::string &title, const std::vector<std::string> &tags, const std::string &content):
-        m_title("A title"), m_tags(std::vector<std::string>(1, "test")), m_content(content) {
+        m_title(title), m_tags(tags), m_content(content) {
         setTimestamp();
     }
 
@@ -23,6 +23,10 @@ public:
         }
 
         return tags;
+    }
+
+    const std::string getContent() {
+        return m_content;
     }
 
     size_t getContentInBytes() {
