@@ -10,14 +10,20 @@ auto main(int argc, char *argv[]) -> int {
     Wiki wiki;
     std::string title = argv[1];
     std::string source = argv[2];
-    std::vector<std::string> tags(&argv[3], argc + argv);
+
     std::regex url_regex = std::regex(".*\\..*", std::regex::extended);
+    std::cout << std::regex_match(argv[2], url_regex);
 
     if (std::regex_match(argv[2], url_regex)) {
+        std::vector<std::string> tags(&argv[3], argc + argv);
+
         wiki.setStrategy(0);
         wiki.recordEntry(title, source, tags);
     } else {
-        // Text
+        std::vector<std::string> tags(&argv[2], argc + argv);
+
+        wiki.setStrategy(1);
+        wiki.writeEntry(title, tags);
     }
 
 //    Wiki wiki;

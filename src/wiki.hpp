@@ -6,19 +6,25 @@
 
 #include "strategy/strategy.hpp"
 #include "strategy/web.hpp"
+#include "strategy/text.hpp"
 #include "tty/termcolor.hpp"
 
 class Wiki {
 public:
-    Wiki() = default;
+    Wiki() : _strategy(nullptr) {}
 
     enum EntryType {
         Web, Text
     };
 
+    void writeEntry(const std::string &title, std::vector<std::string> tags) {
+        const auto entry = _strategy->createEntry("", title, tags);
+    }
+
     void recordEntry(const std::string &title, const std::string &fromSource, std::vector<std::string> tags) {
         const auto entry = _strategy->createEntry(fromSource, title, tags);
 
+        // TODO: implement ostream on Entry for this
         std::cout
                 << termcolor::blink << "Test"
                 << "Entry tags: \n"
@@ -26,10 +32,6 @@ public:
                 << "Content size in bytes: \n"
                 << entry->getContentInBytes()
                 << std::endl;
-    }
-
-    void readEntry() {
-
     }
 
     void setStrategy(int type) {
@@ -40,7 +42,7 @@ public:
                 strategy = new WebStrategy();
                 break;
             case Text:
-                strategy = new WebStrategy();
+                strategy = new TextStrategy();
                 break;
             default:
                 std::cout << "Not sure what to do with that source" << std::endl;
@@ -52,7 +54,5 @@ public:
 private:
     std::unique_ptr<Strategy> _strategy;
 };
-
-Wiki::Wiki() : _strategy(nullptr) {}
 
 #endif
