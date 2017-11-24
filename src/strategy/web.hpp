@@ -16,13 +16,13 @@ private:
         return realsize;
     }
 
-    std::string retrieveContent(std::string fromSource) {
+    std::string retrieveContent(const std::string &fromSource) {
         std::string BASE_URL = "http://fuckyeahmarkdown.com/go/?u=";
         std::string URL = BASE_URL + fromSource;
-        CURL *curl = curl_easy_init();
+        auto curl = curl_easy_init();
         CURLcode res;
 
-        if (curl) {
+        if (curl != nullptr) {
             curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
             curl_easy_setopt(curl, CURLOPT_URL, URL.c_str());
 

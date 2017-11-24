@@ -7,7 +7,6 @@
 #include "strategy/strategy.hpp"
 #include "strategy/web.hpp"
 #include "strategy/text.hpp"
-#include "tty/termcolor.hpp"
 
 class Wiki {
 public:
@@ -19,23 +18,16 @@ public:
 
     void writeEntry(const std::string &title, std::vector<std::string> tags) {
         const auto entry = _strategy->createEntry("", title, tags);
+        entry->print();
     }
 
     void recordEntry(const std::string &title, const std::string &fromSource, std::vector<std::string> tags) {
         const auto entry = _strategy->createEntry(fromSource, title, tags);
-
-        // TODO: implement ostream on Entry for this
-        std::cout
-                << termcolor::blink << "Test"
-                << "Entry tags: \n"
-                << entry->getTags()
-                << "Content size in bytes: \n"
-                << entry->getContentInBytes()
-                << std::endl;
+        entry->print();
     }
 
     void setStrategy(int type) {
-        Strategy* strategy;
+        Strategy *strategy = nullptr;
 
         switch (type) {
             case Web:
@@ -52,7 +44,7 @@ public:
         _strategy.reset(strategy);
     }
 private:
-    std::unique_ptr<Strategy> _strategy;
+    std::unique_ptr<Strategy> _strategy{};
 };
 
 #endif

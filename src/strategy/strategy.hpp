@@ -14,7 +14,7 @@ public:
         return entry;
     }
 private:
-    virtual std::string retrieveContent(std::string source) = 0;
+    virtual std::string retrieveContent(const std::string &source) = 0;
 };
 
 #endif
