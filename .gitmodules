@@ -1,0 +1,6 @@
+[submodule "libs/leveldb"]
+	path = libs/leveldb
+	url = https://github.com/google/leveldb
+[submodule "libs/sqlite_orm"]
+	path = libs/sqlite_orm
+	url = https://github.com/fnc12/sqlite_orm
