@@ -4,3 +4,9 @@
 [submodule "libs/sqlite_orm"]
 	path = libs/sqlite_orm
 	url = https://github.com/fnc12/sqlite_orm
+[submodule "libs/CLI11"]
+	path = libs/CLI11
+	url = https://github.com/CLIUtils/CLI11
+[submodule "libs/rang"]
+	path = libs/rang
+	url = https://github.com/agauniyal/rang
