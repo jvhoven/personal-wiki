@@ -14,6 +14,12 @@ auto initStorage(const std::string &path) {
             make_column("id", &Entry::id, autoincrement(), primary_key()),
             make_column("title", &Entry::title),
             make_column("content", &Entry::content)
+        ),
+        make_table("tag",
+                   make_column("id", &Tag::id, autoincrement(), primary_key()),
+                   make_column("entry_id", &Tag::entry_id),
+                   make_column("title", &Tag::title),
+                   foreign_key(&Tag::entry_id).references(&Entry::id)
         )
     );
 }

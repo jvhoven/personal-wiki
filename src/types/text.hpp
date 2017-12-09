@@ -51,7 +51,6 @@ private:
             }
         }
 
-        std::cout << *_buffer.get() << std::endl;
         return _buffer;
     }
 

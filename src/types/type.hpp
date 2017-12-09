@@ -9,9 +9,9 @@ class Type {
 public:
     auto createEntry(std::string fromSource, std::string title) -> Entry& {
         auto content = retrieveContent(fromSource);
-        std::string compressed = Util::compress_string(*content.get());
+        //std::string compressed = Util::compress_string(*content.get());
 
-        auto entry = Entry{ -1, title, compressed };
+        auto entry = Entry{ -1, title, *content };
         return entry;
     }
 private:

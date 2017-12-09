@@ -18,14 +18,20 @@ public:
         _storage->sync_schema();
     }
 
-    int writeEntry(const std::string &title) {
+    int writeEntry(const std::string &title, const std::vector<std::string> tags) {
         auto entry = _type->createEntry("", title);
-        return  _storage->insert(entry);
+        auto id = _storage->insert(entry);
+
+        this->saveTags(id, tags);
+        return id;
     }
 
-    int recordEntry(const std::string &title, const std::string &fromSource) {
+    int recordEntry(const std::string &title, const std::string &fromSource, const std::vector<std::string> tags) {
         auto entry = _type->createEntry(fromSource, title);
-        return _storage->insert(entry);
+        auto id = _storage->insert(entry);
+
+        this->saveTags(id, tags);
+        return id;
     }
 
     std::shared_ptr<Entry> findEntry(const int id) {
@@ -36,6 +42,15 @@ public:
         }
 
         return std::make_shared<Entry>(Entry{});
+    }
+
+    auto findEntryByTag(const std::string tag) {
+        auto entries = _storage->get_all<Entry>(
+                left_join<Tag>(on(c(&Entry::id) == &Tag::entry_id)),
+                where(like(&Tag::title, "%" + tag + "%"))
+        );
+
+        return entries;
     }
 
     void setType(int type) {
@@ -56,6 +71,13 @@ public:
         _type.reset(entryType);
     }
 private:
+    void saveTags(const int id, const std::vector<std::string> tags) {
+        for (auto tag: tags) {
+            auto t = Tag { -1, std::make_shared<int>(id), tag };
+            _storage->insert(t);
+        }
+    }
+
     std::shared_ptr<Storage> _storage;
     std::unique_ptr<Type> _type{};
 };
