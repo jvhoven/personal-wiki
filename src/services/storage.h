@@ -1,7 +1,7 @@
 #ifndef PERSONALWIKI_STORAGE_H
 #define PERSONALWIKI_STORAGE_H
 
-#include "sqlite_orm/sqlite_orm.h"
+#include "sqlite_orm.h"
 #include "../entry.hpp"
 
 using namespace sqlite_orm;
