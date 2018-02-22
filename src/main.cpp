@@ -3,6 +3,9 @@
 #include "wiki.hpp"
 #include "util.hpp"
 #include "CLI11.hpp"
+#include "rang.hpp"
+
+using namespace rang;
 
 auto main(int argc, char *argv[]) -> int {
     int id;
@@ -13,13 +16,13 @@ auto main(int argc, char *argv[]) -> int {
     Wiki wiki;
 
     CLI::App app("Personal wiki application");
-    CLI::App *find = app.add_subcommand("find", "Finds an entry by a given id.");
-    CLI::App *search = app.add_subcommand("search", "Finds an entry by a given tag.");
+    CLI::App *open = app.add_subcommand("open", "Opens an entry by id.");
+    CLI::App *ls = app.add_subcommand("ls", "List entries by tag.");
     CLI::App *text = app.add_subcommand("text", "Creates a new entry from text.");
     CLI::App *web = app.add_subcommand("web", "Creates a new entry from web.");
 
-    find->add_option("id", id, "The id of the entry.")->required();
-    search->add_option("tag", tag, "The tag you would like to search for.")->required();
+    open->add_option("id", id, "The id of the entry.")->required();
+    ls->add_option("tag", tag, "The tag you would like to search for.");
 
     text->add_option("title", title, "Title of the entry")->required();
     text->add_option("tags", tags, "tags")->required();
@@ -28,23 +31,35 @@ auto main(int argc, char *argv[]) -> int {
     web->add_option("url", source, "Url of the webpage")->required();
     web->add_option("tags", tags, "tags")->required();
 
-    find->set_callback([&]() {
+    // TODO: Open in markdown viewer
+    open->set_callback([&]() {
         auto entry = wiki.findEntry(id);
         std::cout << entry->content << std::endl;
     });
 
-    search->set_callback([&]() {
-        auto entries = wiki.findEntryByTag(tag);
-        std::cout << "Found " << entries.size() << " entries with tag `" << tag << "`:\n";
-        std::cout << "id\ttitle\n";
+    ls->set_callback([&]() {
+        if (tag.length()) {
+            auto entries = wiki.findEntryByTag(tag);
 
-        for (auto &entry : entries) {
-            std::cout << entry.id << "\t" << entry.title << std::endl;
+            std::cout << fg::gray << "id\ttitle" << fg::reset << std::endl;
+            
+            for (auto &entry : entries) {
+                std::cout << style::bold << fg::green << "(" << entry.id << ")\t" << fg::reset << style::reset << entry.title << std::endl;
+            }
+
+            std::cout << "\n💡 open an entry with " << style::bold << "personal-wiki open <id>" << style::reset << std::endl;            
+        } else {
+            auto tags = wiki.findEntriesByTag();
+
+            for (auto &tag : tags) {
+                std::cout << "–  " << style::bold << tag.first << style::reset << fg::green << " (" << tag.second << ")" << fg::reset << std::endl;
+            }
         }
     });
 
     web->set_callback([&]() {
         // TODO: check if source is URL
+        // TODO: grab title from webpage
         wiki.setType(EntryType::Web);
         auto entry = wiki.recordEntry(title, source, tags);
 

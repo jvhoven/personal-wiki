@@ -53,6 +53,25 @@ public:
         return entries;
     }
 
+    auto findEntriesByTag() {
+        std::map<std::string, int> entriesForTag;
+
+        auto tags = _storage->get_all<Tag>(
+            left_join<Entry>(on(c(&Entry::id) == &Tag::entry_id))
+        );
+
+        // Populate map
+        for (auto &tag : tags) {
+            if (!entriesForTag.count(tag.title)) {
+                entriesForTag[tag.title] = 1;
+            } else {
+                entriesForTag[tag.title] += 1;
+            }
+        }
+
+        return entriesForTag;
+    }
+
     void setType(int type) {
         Type *entryType = nullptr;
 
